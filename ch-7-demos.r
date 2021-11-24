@@ -1,38 +1,123 @@
-library(reshape)
-data(package = 'reshape')
+my_number <- 8.2
+sqrt(my_number)
 
-# Now what?
-tips
+my_char <- 'Hello, world'
+toupper(my_char)
 
-# Get first few rows
-tips.head()
+# Is this a vector?
+is.vector(my_number)
 
+# How long is it?
+length(my_number)
 
-# In[6]:
-
-
-tips.info()
-
-
-# In[7]:
+# c is for combine
+my_numbers <- c(5, 8, 2, 7)
 
 
-# We'll do more descriptive statistics later...
-# Why aren't all columns showing up here? 
-tips.describe()
+is.vector(my_numbers)
+str(my_numbers)
+length(my_numbers)
+
+# Works a lot like Excel...
+sqrt(my_numbers)
+
+roster_names <- c('Jack', 'Jill', 'Billy', 'Susie', 'Johnny')
+toupper(roster_names)
 
 
-# In[9]:
+# Coercion...
+my_vec <- c('A', 2, 'C')
+my_vec
+
+str(my_vec)
+
+# Get third element of roster_names vector
+roster_names[3]
+
+# Get first through third elements 
+roster_names[1:3]
+
+# Get second through last elements
+roster_names[2:length(roster_names)]
 
 
-# Export to Excel
-tips.to_excel('output/tips.xlsx')
+# Get second and fifth elements
+roster_names[c(2, 5)]
 
 
-# ### Back to slides...
+### Back to slides ###
 
-# In[ ]:
+roster <- data.frame(
+  name = c('Jack', 'Jill', 'Billy', 'Susie', 'Johnny'),
+  height = c(72, 65, 68, 69, 66),
+  injured = c(FALSE, TRUE, FALSE, FALSE, TRUE))
+roster
+
+
+data()
+
+head(iris)
+
+is.data.frame(iris)
+
+str(iris)
+
+data(package = 'psych')
+data('sat.act')
+str(sat.act)
 
 
 
+getwd()
 
+
+file.exists('test-file.csv')
+
+file.exists('test-folder/test-file.csv')
+
+# This is only TRUE if you've placed the file one
+# up from current folder location
+file.exists('../test-file.csv')
+
+read_csv('datasets/star/districts.csv')
+
+districts <- read_csv("datasets/star/districts.csv")
+districts
+
+
+star <- read_xlsx("datasets/star/star.xlsx")
+head(star)
+
+View(star)
+
+glimpse(star)
+
+summary(star)
+
+describe(star)
+
+
+# Third row, second column of data frame
+roster[3, 2]
+
+# Second through fourth rows, first through third columns
+roster[2:4, 1:3]
+
+# Second and third rows only
+roster[2:3,]
+
+
+# First and third columns only
+roster[, c(1,3)]
+
+
+roster$height
+
+is.vector(roster$height)
+
+# Write roster data frame to csv 
+write_csv(roster, 'output/roster-output-r.csv')
+
+
+# Write roster data frame to csv 
+write_xlsx(roster, 'output/roster-output-r.xlsx')

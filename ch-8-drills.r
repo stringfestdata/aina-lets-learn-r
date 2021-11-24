@@ -1,36 +1,13 @@
-#!/usr/bin/env python
-# coding: utf-8
+two files in the census subfolder of datasets, census.csv and census-divisions.csv. Read these into R and do the following:
+  
+  Sort the data by region ascending, division ascending, and population descending. (You will need to combine datasets to do this.) Write the results to an Excel worksheet.
 
-# Dataset: mpg (from seaborn)
-# 
-# - Drop the `name` column
-# - Create a `weight_kg` column (weight * .454)
-# - Sort by `mpg` by low to high
-# - Keep only the records with `cylinder` of more than 4
-# - Get the average `mpg` for each `origin`
-# 
+Drop the postal code field from your merged dataset.
 
-# Pick a `seaborn` dataset or two... and make some visualizations!
-# 
-# Include at least two univariate and two bivariate plots. 
-# Label your axes and titles on at least one of them. 
-# 
-# Get a list of available datasets:
-# 
-# ```
-# import seaborn as sns
-# sns.get_dataset_names()
-# ```
+Create a new column density that is a calculation of population divided by land area.
 
-# In[ ]:
+Visualize the relationship between land area and population for all observations in 2015.
 
+Find the total population for each region in 2015.
 
-import seaborn as sns
-sns.get_dataset_names()
-
-
-# In[ ]:
-
-
-
-
+Create a table containing state names and populations, with the population for each year 2010-2015 kept in an individual column.

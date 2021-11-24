@@ -1,143 +1,81 @@
-#!/usr/bin/env python
-# coding: utf-8
+#install.packages('DAAG')
+library(DAAG)
+library(tidyverse)
+#install.packages('tidymodels')
+library(tidymodels)
 
-# Dataset: `mpg` from `seaborn`
-# 
-# Is there a difference between the average mileage of American and European cars? 
+head(ais)
 
-# In[1]:
+# 1. Visualize rcc by sex
+ggplot(data = ais, aes(x = sex, y = rcc))+
+  geom_boxplot()
 
 
-import pandas as pd
-import seaborn as sns
+ggplot(data = ais, aes(x = rcc))+
+         geom_histogram()+
+         facet_wrap(~ sex)
 
-mpg = sns.load_dataset('mpg')
-mpg.head()
+# 2. Significant difference in red blood cell count?
+t.test(rcc ~ sex, data=ais)
+# Yes, there is a significant difference in red blood cell counts
 
+# 3. Correlation matrix of relevant variables: 
+ais %>% 
+  select(-c(sex, sport)) %>% 
+  cor()
 
-# In[2]:
+# Lots of these to plot; you may 
+# want to pick just the ones of interest
+ais %>% 
+  select(-c(sex, sport)) %>% 
+  pairs()
 
 
-mpg['origin'].unique()
+# 4. Visualize relationship of height on weight: 
+ggplot(data = ais, aes(x = ht,y = wt))+
+  geom_point()
 
 
-# In[3]:
+# 5. Linear regression of height on weight: 
+ais_reg <- lm(wt ~ ht, data = ais)
+summary(ais_reg)
 
+# Yes there is a significant influence. 
+# height = -126 + 1.11 * weight
+# About 61% of the variability in weight is explained by height. 
 
-usa = mpg.query('origin == "usa"')
-usa.shape
+# Bonus: visualize the regression
+ggplot(data = ais, aes(x = ht,y = wt))+
+  geom_point()+
+  geom_smooth(method = lm)
 
 
-# In[4]:
+# 5. Split the dataset and validat model
+set.seed(1234)
+ais_split <- initial_split(ais)
+ais_train <- training(ais_split)
+ais_test <- testing(ais_split)
 
 
-europe = mpg.query('origin =="europe"')
-europe.shape
+dim(ais_train)
+dim(ais_test)
+# These samples are skirting the lower side for
+# representative samples, proceed with caution
 
+# Specify what kind of model this is
+lm_spec <- linear_reg()
 
-# In[5]:
+# Fit the model to the data 
+lm_fit <- lm_spec %>%
+  fit(ht ~ wt, data = ais)
 
+ais_pred <- lm_fit %>% 
+  predict(new_data = ais_test) %>% 
+  bind_cols(ais_test)
 
-# Make sure to do descriptive statistics first!
-sns.barplot(x='origin', y='mpg', data=mpg)
 
+# Find r-squared
+rsq(data = ais_pred, truth = ht, estimate = .pred)
 
-# In[6]:
-
-
-mpg.groupby('origin').describe()['mpg']
-
-
-# In[7]:
-
-
-from scipy import stats
-stats.ttest_ind(europe['mpg'], usa['mpg'])
-
-
-# In[8]:
-
-
-# What about weight and mpg?
-sns.scatterplot(x='weight', y='mpg', data=mpg)
-
-
-# In[9]:
-
-
-tips = sns.load_dataset('tips')
-tips.head()
-
-
-# In[10]:
-
-
-# total_bill comes first in time...
-sns.scatterplot(x='total_bill', y='tip', data=tips)
-
-# Looks fairly linear
-
-
-# In[11]:
-
-
-x = tips['total_bill']
-y = tips['tip']
-
-stats.linregress(x, y)
-
-
-# In[14]:
-
-
-sns.regplot(x, y)
-
-
-# In[15]:
-
-
-from sklearn import linear_model
-from sklearn import model_selection
-from sklearn import metrics
-
-X_train, X_test, y_train, y_test =  model_selection.train_test_split(tips[['total_bill']], 
-                                                                     tips[['tip']], random_state=1234)
-
-
-# In[16]:
-
-
-y_train.shape
-
-
-# In[17]:
-
-
-y_test.shape
-
-
-# In[18]:
-
-
-# Create linear regression object
-regr = linear_model.LinearRegression()
-
-# Train the model using the training sets
-regr.fit(X_train, y_train)
-
-# Make predictions using the testing set
-y_pred = regr.predict(X_test)
-
-
-# In[19]:
-
-
-# What % of variability in y is explained by x?
-metrics.r2_score(y_test, y_pred)
-
-
-# In[ ]:
-
-
-
-
+# Find rmse
+rmse(data = ais_pred, truth = ht, estimate = .pred)
